@@ -1,38 +1,86 @@
+"use client"
+
+import { useState } from "react"
+import { calcularDiagnostico } from "./calcular"
+
 export default function Diagnostico() {
+
+  const [resultado, setResultado] = useState<any>(null)
+
+  function analisar(e:any){
+    e.preventDefault()
+
+    const faturamento = Number(e.target.faturamento.value)
+    const maquinas = Number(e.target.maquinas.value)
+    const velocidade = Number(e.target.velocidade.value)
+    const desperdicio = Number(e.target.desperdicio.value)
+
+    const analise = calcularDiagnostico(
+      faturamento,
+      maquinas,
+      velocidade,
+      desperdicio
+    )
+
+    setResultado(analise)
+  }
+
   return (
     <main style={{padding:40,fontFamily:"Arial"}}>
-      
-      <h1>Diagnóstico Empresarial - SoflexoAI</h1>
 
-      <p>Responda algumas perguntas para analisarmos a eficiência da sua operação flexográfica.</p>
+      <h1>SoflexoAI Diagnóstico</h1>
 
-      <form style={{marginTop:30}}>
+      <form onSubmit={analisar}>
 
-        <div style={{marginBottom:20}}>
-          <label>Faturamento mensal da empresa (R$)</label><br/>
-          <input type="number" placeholder="Ex: 500000" />
-        </div>
+        <p>
+          Faturamento mensal<br/>
+          <input name="faturamento" type="number"/>
+        </p>
 
-        <div style={{marginBottom:20}}>
-          <label>Número de máquinas de impressão</label><br/>
-          <input type="number" placeholder="Ex: 3" />
-        </div>
+        <p>
+          Número de máquinas<br/>
+          <input name="maquinas" type="number"/>
+        </p>
 
-        <div style={{marginBottom:20}}>
-          <label>Velocidade média de impressão (m/min)</label><br/>
-          <input type="number" placeholder="Ex: 120" />
-        </div>
+        <p>
+          Velocidade média (m/min)<br/>
+          <input name="velocidade" type="number"/>
+        </p>
 
-        <div style={{marginBottom:20}}>
-          <label>Percentual estimado de desperdício (%)</label><br/>
-          <input type="number" placeholder="Ex: 8" />
-        </div>
+        <p>
+          Desperdício (%)<br/>
+          <input name="desperdicio" type="number"/>
+        </p>
 
         <button type="submit">
           Analisar operação
         </button>
 
       </form>
+
+      {resultado && (
+
+        <div style={{marginTop:40}}>
+
+          <h2>Resultado do Diagnóstico</h2>
+
+          <p>
+            SoflexoAI Score: <b>{resultado.score} / 100</b>
+          </p>
+
+          <p>
+            Perda anual estimada: 
+            <b> $ {resultado.perdaAnual.toLocaleString()}</b>
+          </p>
+
+          <p>
+            Potencial de recuperação:
+            <b> $ {resultado.potencialRecuperacao.toLocaleString()}</b>
+          </p>
+
+        </div>
+
+      )}
 
     </main>
   )
